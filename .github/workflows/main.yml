@@ -1,9 +1,12 @@
-name: Python application
+name: Build executable
 
 on:
   push:
     branches:
-      - main  # Adjust this to your main branch name
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
@@ -14,26 +17,14 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v2
         with:
-          python-version: '3.12'
+          python-version: '3.x'  # Replace with your Python version
 
-      - name: Install system dependencies
+      - name: Install pyinstaller
         run: |
-          sudo apt-get update
-          sudo apt-get install -y libmtdev-dev xvfb
-      
-      - name: Start Xvfb
-        run: Xvfb :99 -screen 0 1024x768x24 &
+          python -m pip install pyinstaller
 
-      - name: Set up environment
-        run: export DISPLAY=:99
-      
-      - name: Install Python dependencies
-        run: |
-          pip install -r requirements.txt
-      
-      - name: Build with PyInstaller
+      - name: Build executable
         run: |
           pyinstaller --onefile main.py
-
